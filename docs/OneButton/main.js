@@ -16,10 +16,10 @@ l   l
 l   l
    l
 `,`
-g
-g
-g
-g
+y
+y
+y
+y
 
 
 `,`
@@ -31,9 +31,9 @@ r
 r
 `,`
 
-l   l
- lllll
-l   l
+   
+llllll
+   
 
 
 `
@@ -52,6 +52,7 @@ const G = {
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     isReplayEnabled: true,
+    //theme: "shapeDark",
 };
 
 // JSDoc comments for typing
@@ -67,21 +68,26 @@ let arrows;
  * }} Yellow_Target
  */
 
-/**
- * @type { Yellow_Target [] }
- */
+/** @type { Yellow_Target [] } */
  let yellow_target;
 
 /**
  * @typedef {{
  * pos: Vector,
- * }} Red_Target
+ * }} Red_Target_Up
  */
 
+/** @type { Red_Target_Up [] } */
+ let red_target_up;
+
 /**
- * @type { Red_Target [] }
+ * @typedef {{
+ * pos: Vector,
+ * }} Red_Target_Down
  */
- let red_target;
+
+/** @type { Red_Target_Down [] } */
+ let red_target_down;
 
 // The game loop function
 function update() {
@@ -97,17 +103,23 @@ function update() {
             yellow_target.push({ pos: vec(posX, posY) })
         }
 
-        red_target = [];
-        if (red_target.length === 0) {
-            red_target.push({ pos: vec(posX, posY + 4) })
-            red_target.push({ pos: vec(posX, posY - 6) })
+        red_target_up = [];
+        if (red_target_up.length === 0) {
+            red_target_up.push({ pos: vec(posX - 1, posY - 6) })
+        }
+
+        red_target_down = [];
+        if (red_target_down.length === 0) {
+            red_target_down.push({ pos: vec(posX - 1, posY + 4) })
         }
     }
 
+    // End the game if the arrow passes the right border
     if (arrows[0].x > 205) {
         end();
     }
 
+    // Draw the arrow
     remove(arrows, (a) => {
         if (input.isPressed) {
             a.y -= 0.25;
@@ -128,21 +140,54 @@ function update() {
             addScore(10);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            yellow_target.push({ pos: vec(rnd(90, 110), rnd(20, 30)) })
+            const posX = rnd(90, 110);
+            const posY = rnd(20, 30);
+            yellow_target.push({ pos: vec(posX, posY) })
+            red_target_up.pop();
+            red_target_up.push({ pos: vec(posX - 1, posY - 6)})
+            red_target_down.pop();
+            red_target_down.push({ pos: vec(posX - 1, posY + 4)})
         }
         return (isCollidingwithYTarget);
     })
 
-    remove(red_target, (rt) => {
+    remove(red_target_up, (rtu) => {
         color("black")
-        const isCollidingwithRTarget = char("c", rt.pos).isColliding.char.d;
-        if (isCollidingwithRTarget) {
+        const isCollidingwithRTargetUp = char("c", rtu.pos).isColliding.char.d;
+        if (isCollidingwithRTargetUp) {
             color("light_black");
-            particle(rt.pos);
+            particle(rtu.pos);
             addScore(5);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
+            const posX = rnd(90, 110);
+            const posY = rnd(20, 30);
+            red_target_up.push({ pos: vec(posX - 1, posY - 6)})
+            yellow_target.pop();
+            yellow_target.push({ pos: vec(posX, posY) })
+            red_target_down.pop()
+            red_target_down.push({ pos: vec(posX - 1, posY + 4)})
         }
-        return (isCollidingwithRTarget);
+        return (isCollidingwithRTargetUp);
+    })
+
+    remove(red_target_down, (rtd) => {
+        color("black")
+        const isCollidingwithRTargetDown = char("c", rtd.pos).isColliding.char.d;
+        if (isCollidingwithRTargetDown) {
+            color("light_black");
+            particle(rtd.pos);
+            addScore(5);
+            arrows.pop();
+            arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
+            const posX = rnd(90, 110);
+            const posY = rnd(20, 30);
+            red_target_down.push({ pos: vec(posX - 1, posY + 4)})
+            yellow_target.pop();
+            yellow_target.push({ pos: vec(posX, posY) })
+            red_target_up.pop();
+            red_target_up.push({ pos: vec(posX - 1, posY - 6)})
+        }
+        return (isCollidingwithRTargetDown);
     })
 }
