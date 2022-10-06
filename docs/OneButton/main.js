@@ -10,11 +10,32 @@ description = `
 characters = [
 `
    l
-l   l
+l   l  
  lllll
  lllll
 l   l
    l
+`,`
+g
+g
+g
+g
+
+
+`,`
+r
+r
+r
+r
+r
+r
+`,`
+
+l   l
+ lllll
+l   l
+
+
 `
 ];
 
@@ -62,18 +83,6 @@ let arrows;
  */
  let red_target;
 
-/**
- * @typedef {{
- * pos: Vector,
- * }} Blue_Target
- */
-
-/**
- * @type { Blue_Target [] }
- */
- let blue_target;
-
-
 // The game loop function
 function update() {
     // The init function running at startup
@@ -91,14 +100,8 @@ function update() {
         red_target = [];
         if (red_target.length === 0) {
             red_target.push({ pos: vec(posX, posY + 4) })
-            red_target.push({ pos: vec(posX, posY - 4) })
+            red_target.push({ pos: vec(posX, posY - 6) })
         }
-
-        // blue_target = [];
-        // if (blue_target.length === 0) {
-        //     blue_target.push({ pos: vec(posX, posY + 4) })
-        //     blue_target.push({ pos: vec(posX, posY - 4) })
-        // }
     }
 
     if (arrows[0].x > 205) {
@@ -112,42 +115,34 @@ function update() {
         a.x += 0.5;
         a.y += 0.1;
         color("black");
-        char("a", a.x, a.y);
+        char("d", a.x, a.y);
         return a.x > 210;
     });
 
     remove(yellow_target, (yt) => {
-        color("yellow");
-        const isCollidingwithYTarget = box(yt.pos, 2).isColliding.char.a;
+        color("black")
+        const isCollidingwithYTarget = char("b", yt.pos).isColliding.char.d;
         if (isCollidingwithYTarget) {
             color("light_black");
             particle(yt.pos);
             addScore(10);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
+            yellow_target.push({ pos: vec(rnd(90, 110), rnd(20, 30)) })
         }
         return (isCollidingwithYTarget);
     })
 
     remove(red_target, (rt) => {
-        color("red");
-        const isCollidingwithRTarget = box(rt.pos, 3).isColliding.char.a;
+        color("black")
+        const isCollidingwithRTarget = char("c", rt.pos).isColliding.char.d;
         if (isCollidingwithRTarget) {
             color("light_black");
             particle(rt.pos);
             addScore(5);
+            arrows.pop();
+            arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
         }
         return (isCollidingwithRTarget);
     })
-
-    // remove(blue_target, (bt) => {
-    //     color("blue");
-    //     const isCollidingwithBTarget = box(bt.pos, 2).isColliding.char.a;
-    //     if (isCollidingwithBTarget) {
-    //         color("light_black");
-    //         particle(bt.pos);
-    //         addScore(2);
-    //     }
-    //     return (isCollidingwithBTarget);
-    // })
 }
