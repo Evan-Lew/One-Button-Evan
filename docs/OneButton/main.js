@@ -4,6 +4,8 @@ title = "BULLSEYE";
 // The description, which is also displayed on the title screen
 description = `
 [Hold] To Steady Your Shot
+
+ Before You Lose Control!
 `;
 
 // The array of custom sprites
@@ -59,6 +61,8 @@ const G = {
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     isReplayEnabled: true,
+    isPlayingBgm: true,
+    seed: 1,
     //theme: "shapeDark",
 };
 
@@ -77,13 +81,13 @@ let blue_target_down;
 
 // red_target variables
 const rt_posx = 1;
-const rtu_posY = 5;
-const rtd_posY = 3;
+const rtu_posY = 7;
+const rtd_posY = 5;
 
 // blue_target variables
 const bt_posx = 2;
-const btu_posY = 12;
-const btd_posY = 8;
+const btu_posY = 16;
+const btd_posY = 12;
 
 // The game loop function
 function update() {
@@ -119,17 +123,22 @@ function update() {
         blue_target_down = [];
         if (blue_target_down.length === 0) {
             blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY) })
-        }
+        }      
     }
 
-    // End the game if the arrow passes the right border
-    if (arrows[0].x > 205) {
+    // Draw the line that indicates player control is turned off
+    color("light_black");
+    line(75, 0, 75, 100, 3);
+
+    // End the game if the arrow passes the right border or hits the grounds
+    if (arrows[0].x > 205 || arrows[0].y >= 105) {
         end();
     }
 
     // Draw the arrow
     remove(arrows, (a) => {
-        if (input.isPressed) {
+        // Button input
+        if (input.isPressed && a.x < 75) {
             a.y -= 0.55;
         }
         a.x += 0.5;
@@ -144,6 +153,7 @@ function update() {
         color("black")
         const isCollidingwithYTarget = char("b", yt.pos).isColliding.char.a;
         if (isCollidingwithYTarget) {
+            play("hit");
             color("light_black");
             particle(yt.pos);
             addScore(10);
@@ -169,6 +179,7 @@ function update() {
         color("black")
         const isCollidingwithRTargetUp = char("c", rtu.pos).isColliding.char.a;
         if (isCollidingwithRTargetUp) {
+            play("hit");
             color("light_black");
             particle(rtu.pos);
             addScore(5);
@@ -193,6 +204,7 @@ function update() {
         color("black")
         const isCollidingwithRTargetDown = char("c", rtd.pos).isColliding.char.a;
         if (isCollidingwithRTargetDown) {
+            play("hit");
             color("light_black");
             particle(rtd.pos);
             addScore(5);
@@ -218,6 +230,7 @@ function update() {
         color("black")
         const isCollidingwithBTargetUp = char("d", btu.pos).isColliding.char.a;
         if (isCollidingwithBTargetUp) {
+            play("hit");
             color("light_black");
             particle(btu.pos);
             addScore(1);
@@ -242,6 +255,7 @@ function update() {
         color("black")
         const isCollidingwithBTargetDown = char("d", btd.pos).isColliding.char.a;
         if (isCollidingwithBTargetDown) {
+            play("hit");
             color("light_black");
             particle(btd.pos);
             addScore(5);
