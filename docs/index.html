@@ -29,9 +29,9 @@ description = `
 characters = [
 `
 
-
-llllll
-
+l   l
+ lllll
+l   l
 
 
 `,`
@@ -70,15 +70,15 @@ const G = {
 	WIDTH: 200,
 	HEIGHT: 100,
 
-    PLAYER_X_POS: 5,
-    PLAYER_Y_POS: 10,
+    PLAYER_X_POS: -10,
+    PLAYER_Y_POS: -10,
 };
 
 // Game runtime options
 options = {
 	viewSize: {x: G.WIDTH, y: G.HEIGHT},
     isReplayEnabled: true,
-    isPlayingBgm: true,
+    //isPlayingBgm: true,
     seed: 1,
     //theme: "shapeDark",
 };
@@ -98,13 +98,13 @@ let blue_target_down;
 
 // red_target variables
 const rt_posx = 1;
-const rtu_posY = 7;
-const rtd_posY = 5;
+const rtu_posY = 8;
+const rtd_posY = 6;
 
 // blue_target variables
 const bt_posx = 2;
-const btu_posY = 16;
-const btd_posY = 12;
+const btu_posY = 18;
+const btd_posY = 14;
 
 // The game loop function
 function update() {
@@ -114,11 +114,12 @@ function update() {
         player = { arrow: arrows[0]};    
 
         // Generate the center target position
-        // const posX = rnd(100, 195);
-        // const posY = rnd(20, 80);
-        const posX = 100;
-        const posY = 50;
-        
+        const posX = rnd(125, 170);
+        const posY = rnd(40, 60);
+
+        // const posX = 135;
+        // const posY = 30;
+       
         yellow_target = [];
         if (yellow_target.length === 0) {
             yellow_target.push({ pos: vec(posX, posY) })
@@ -142,21 +143,29 @@ function update() {
             blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY) })
         }      
     }
-
+    text(difficulty.toString(), 3, 10);
     // Draw the line that indicates player control is turned off
-    color("light_black");
-    line(75, 0, 75, 100, 3);
+    // Make the line disappear after a minute
+    if (difficulty < 2) {
+        color("light_black");
+        line(100, 0, 100, 100, 3);
+    }
 
     // End the game if the arrow passes the right border or hits the grounds
     if (arrows[0].x > 205 || arrows[0].y >= 105) {
+        play("explosion");
         end();
     }
 
     // Draw the arrow
     remove(arrows, (a) => {
         // Button input
-        if (input.isPressed && a.x < 75) {
+        if (input.isPressed && a.x < 100) {
             a.y -= 0.55;
+        }
+        // Sfx to let the player know they are out of the screen
+        if (a.y < 0 && a.x > 5) {
+            play("jump");
         }
         a.x += 0.5;
         a.y += 0.5;
@@ -176,8 +185,8 @@ function update() {
             addScore(10);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            const posX = rnd(90, 110);
-            const posY = rnd(20, 30);
+            const posX = rnd(125, 170);
+            const posY = rnd(40, 60);
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_up.pop();
             red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY) })
@@ -202,8 +211,8 @@ function update() {
             addScore(5);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            const posX = rnd(90, 110);
-            const posY = rnd(20, 30);
+            const posX = rnd(125, 170);
+            const posY = rnd(40, 60);
             red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
@@ -227,8 +236,8 @@ function update() {
             addScore(5);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            const posX = rnd(90, 110);
-            const posY = rnd(20, 30);
+            const posX = rnd(125, 170);
+            const posY = rnd(40, 60);
             red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
@@ -253,8 +262,8 @@ function update() {
             addScore(1);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            const posX = rnd(90, 110);
-            const posY = rnd(20, 30);
+            const posX = rnd(125, 170);
+            const posY = rnd(40, 60);
             blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
@@ -278,8 +287,8 @@ function update() {
             addScore(5);
             arrows.pop();
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
-            const posX = rnd(90, 110);
-            const posY = rnd(20, 30);
+            const posX = rnd(125, 170);
+            const posY = rnd(40, 60);
             blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
