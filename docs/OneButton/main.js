@@ -66,53 +66,24 @@ options = {
 
 /** @type {{arrow: Vector}} */
 let player;
+
 /** @type {Vector[]} */
 let arrows;
+let yellow_target;
+let red_target_up;
+let red_target_down;
+let blue_target_up;
+let blue_target_down;
 
-/**
- * @typedef {{
- * pos: Vector,
- * }} Yellow_Target
- */
+// red_target variables
+const rt_posx = 1;
+const rtu_posY = 5;
+const rtd_posY = 3;
 
-/** @type { Yellow_Target [] } */
- let yellow_target;
-
-/**
- * @typedef {{
- * pos: Vector,
- * }} Red_Target_Up
- */
-
-/** @type { Red_Target_Up [] } */
- let red_target_up;
-
-/**
- * @typedef {{
- * pos: Vector,
- * }} Red_Target_Down
- */
-
-/** @type { Red_Target_Down [] } */
- let red_target_down;
-
-/**
- * @typedef {{
- * pos: Vector,
- * }} Blue_Target_Up
- */
-
-/** @type { Blue_Target_Up [] } */
- let blue_target_up;
-
-/**
- * @typedef {{
- * pos: Vector,
- * }} Blue_Target_Down
- */
-
-/** @type { Blue_Target_Down [] } */
- let blue_target_down;
+// blue_target variables
+const bt_posx = 2;
+const btu_posY = 12;
+const btd_posY = 8;
 
 // The game loop function
 function update() {
@@ -134,20 +105,20 @@ function update() {
 
         red_target_up = [];
         if (red_target_up.length === 0) {
-            red_target_up.push({ pos: vec(posX - 1, posY - 5) })
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY) })
         }
         red_target_down = [];
         if (red_target_down.length === 0) {
-            red_target_down.push({ pos: vec(posX - 1, posY + 3) })
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY) })
         }
 
         blue_target_up = [];
         if (blue_target_up.length === 0) {
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12) })
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY) })
         }
         blue_target_down = [];
         if (blue_target_down.length === 0) {
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8) })
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY) })
         }
     }
 
@@ -159,16 +130,16 @@ function update() {
     // Draw the arrow
     remove(arrows, (a) => {
         if (input.isPressed) {
-            a.y -= 0.25;
+            a.y -= 0.55;
         }
         a.x += 0.5;
-        a.y += 0.1;
+        a.y += 0.5;
         color("black");
         char("a", a.x, a.y);
         return a.x > 210;
     });
 
-    // Yellow_Target collision
+    // yellow_target collision
     remove(yellow_target, (yt) => {
         color("black")
         const isCollidingwithYTarget = char("b", yt.pos).isColliding.char.a;
@@ -182,18 +153,18 @@ function update() {
             const posY = rnd(20, 30);
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_up.pop();
-            red_target_up.push({ pos: vec(posX - 1, posY - 5)})
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY) })
             red_target_down.pop();
-            red_target_down.push({ pos: vec(posX - 1, posY + 3)})
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             blue_target_up.pop();
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12)})
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
             blue_target_down.pop();
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8)})
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
         }
         return (isCollidingwithYTarget);
     })
 
-    // Red_Target Up and Down collisions
+    // red_target up and down collisions
     remove(red_target_up, (rtu) => {
         color("black")
         const isCollidingwithRTargetUp = char("c", rtu.pos).isColliding.char.a;
@@ -205,15 +176,15 @@ function update() {
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
             const posX = rnd(90, 110);
             const posY = rnd(20, 30);
-            red_target_up.push({ pos: vec(posX - 1, posY - 5)})
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_down.pop();
-            red_target_down.push({ pos: vec(posX - 1, posY + 3)})
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             blue_target_up.pop();
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12)})
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
             blue_target_down.pop();
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8)})
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
         }
         return (isCollidingwithRTargetUp);
     })
@@ -229,19 +200,20 @@ function update() {
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
             const posX = rnd(90, 110);
             const posY = rnd(20, 30);
-            red_target_down.push({ pos: vec(posX - 1, posY + 3)})
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_up.pop();
-            red_target_up.push({ pos: vec(posX - 1, posY - 5)})
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY)})
             blue_target_up.pop();
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12)})
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
             blue_target_down.pop();
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8)})
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
         }
         return (isCollidingwithRTargetDown);
     })
 
+    // blue_target up and down collisions
     remove(blue_target_up, (btu) => {
         color("black")
         const isCollidingwithBTargetUp = char("d", btu.pos).isColliding.char.a;
@@ -253,15 +225,15 @@ function update() {
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
             const posX = rnd(90, 110);
             const posY = rnd(20, 30);
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12)})
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_up.pop();
-            red_target_up.push({ pos: vec(posX - 1, posY - 5)})
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY)})
             red_target_down.pop();
-            red_target_down.push({ pos: vec(posX - 1, posY + 3)})
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             blue_target_down.pop();
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8)})
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
         }
         return (isCollidingwithBTargetUp);
     })
@@ -277,15 +249,15 @@ function update() {
             arrows.push(vec(G.PLAYER_X_POS, G.PLAYER_Y_POS));
             const posX = rnd(90, 110);
             const posY = rnd(20, 30);
-            blue_target_down.push({ pos: vec(posX - 2, posY + 8)})
+            blue_target_down.push({ pos: vec(posX - bt_posx, posY + btd_posY)})
             yellow_target.pop();
             yellow_target.push({ pos: vec(posX, posY) })
             red_target_up.pop();
-            red_target_up.push({ pos: vec(posX - 1, posY - 5)})
+            red_target_up.push({ pos: vec(posX - rt_posx, posY - rtu_posY)})
             red_target_down.pop();
-            red_target_down.push({ pos: vec(posX - 1, posY + 3)})
+            red_target_down.push({ pos: vec(posX - rt_posx, posY + rtd_posY)})
             blue_target_up.pop();
-            blue_target_up.push({ pos: vec(posX - 2, posY - 12)})
+            blue_target_up.push({ pos: vec(posX - bt_posx, posY - btu_posY)})
         }
         return (isCollidingwithBTargetDown);
     })
